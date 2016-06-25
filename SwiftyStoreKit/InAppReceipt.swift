@@ -171,15 +171,33 @@ internal class InAppReceipt {
     }
 
     // https://developer.apple.com/library/ios/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html
+    
+    /**
+     *  - Parameter receiptVerifyURL: receipt verify url (default: Test)
+     *  - Parameter password: Only used for receipts that contain auto-renewable subscriptions. Your app’s shared secret (a hexadecimal string).
+     *  - Parameter session: the session used to make remote call.
+     *  - Parameter completion: handler for result
+     */
+    class func verify(
+        receiptVerifyURL url: ReceiptVerifyURL = .Test,
+        password autoRenewPassword: String? = nil,
+        session: NSURLSession = NSURLSession.sharedSession(),
+        completion:(result: SwiftyStoreKit.VerifyReceiptResult) -> ()) {
+        
+            return verify(
+                receiptVerifyURL: url.rawValue,
+                password: autoRenewPassword,
+                session: session, completion: completion)
+    }
 
    /**
-    *  - Parameter receiptVerifyURL: receipt verify url (default: Test)
+    *  - Parameter receiptVerifyURL: receipt verify url
     *  - Parameter password: Only used for receipts that contain auto-renewable subscriptions. Your app’s shared secret (a hexadecimal string).
     *  - Parameter session: the session used to make remote call.
     *  - Parameter completion: handler for result
     */
     class func verify(
-        receiptVerifyURL url: ReceiptVerifyURL = .Test,
+        receiptVerifyURL url: String,
         password autoRenewPassword: String? = nil,
         session: NSURLSession = NSURLSession.sharedSession(),
         completion:(result: SwiftyStoreKit.VerifyReceiptResult) -> ()) {
@@ -191,7 +209,7 @@ internal class InAppReceipt {
             }
 
             // Create request
-            let storeURL = NSURL(string: url.rawValue)! // safe (until no more)
+            let storeURL = NSURL(string: url)! // safe (until no more)
             let storeRequest = NSMutableURLRequest(URL: storeURL)
             storeRequest.HTTPMethod = "POST"
 
